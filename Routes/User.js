@@ -1,9 +1,11 @@
 const express = require("express");
 const Users = require("../Models/Users");
 var bodyParser = require("body-parser");
+// const mail = require("../Middleware/MailSetup");
 const bcrypt = require("bcrypt");
 const saltRounds = 10;
 var jwt = require("jsonwebtoken");
+const sendMail = require("../Middleware/MailSetup");
 var urlencodedParser = bodyParser.urlencoded({ extended: false });
 var jsonParser = bodyParser.json();
 const getHashPass = async (pass) => {
@@ -40,10 +42,13 @@ router.post("/sign-up", async (req, res) => {
     password: await getHashPass(req.body.password),
     userType: req.body.userType,
     jwtToken: token,
+    emailVerified: false,
   });
   try {
     const dataToSave = await data.save();
-    res.status(200).send({ success: true, data: dataToSave });
+
+    sendMail(dataToSave.email);
+    res.status(200).send({ success: true });
   } catch (error) {
     res.status(400).json({ message: error.message });
   }
@@ -95,8 +100,15 @@ router.get("/getOne/:id", (req, res) => {
 });
 
 //Update by ID Method
-router.patch("/update/:id", (req, res) => {
-  res.send("Update by ID API");
+router.patch("/update/:id", async (req, res) => {
+  console.log(req.body);
+  const user = await Users.findByIdAndUpdate(req.params.id, req.body, {
+    new: true,
+  });
+
+  res
+    .status(200)
+    .send({ success: true, message: "User Successfully updated", user });
 });
 
 //Delete by ID Method

@@ -13,6 +13,10 @@ const dataSchema = new mongoose.Schema({
     required: true,
     type: String,
   },
+  emailVerified: {
+    type: Boolean,
+    default: false,
+  },
   userType: {
     required: true,
     type: String,
