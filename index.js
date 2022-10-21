@@ -5,6 +5,7 @@ const mongoose = require("mongoose");
 
 var bodyParser = require("body-parser");
 const { route } = require("./Routes/User");
+const Stripe = require("./Middleware/Stripe");
 const userRoute = require("./Routes/User");
 const mongoString = process.env.mongoUri;
 
@@ -26,6 +27,7 @@ app.use(cors({ origin: true, credentials: true }));
 
 // Put these statements before you define any routes.
 var bodyParser = require("body-parser");
+
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 app.use(function (req, res, next) {
@@ -46,7 +48,7 @@ app.use(function (req, res, next) {
 // --------------
 
 app.use("/api/user", userRoute);
-
+app.use("/api/stripe", Stripe);
 app.listen(5000, () => {
   console.log(`Server Started at ${5000}`);
 });
