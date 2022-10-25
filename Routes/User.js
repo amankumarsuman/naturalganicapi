@@ -76,8 +76,10 @@ router.post("/login", async (req, res) => {
       success: true,
       user: {
         email: user.email,
+        emailVerified: user.emailVerified,
         token: user.jwtToken,
         fullName: user.fullName,
+
         _id: user._id,
         userType: user.userType,
       },
