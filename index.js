@@ -6,9 +6,11 @@ const mongoose = require("mongoose");
 var bodyParser = require("body-parser");
 const { route } = require("./Routes/User");
 const Stripe = require("./Middleware/Stripe");
+const Listing = require("./Routes/Listing");
 const userRoute = require("./Routes/User");
+const google = require("./Routes/google");
 const mongoString = process.env.mongoUri;
-
+const googleConfig = require("./Middleware/googleConfig.json");
 mongoose.connect(mongoString);
 const database = mongoose.connection;
 
@@ -46,9 +48,12 @@ app.use(function (req, res, next) {
 });
 
 // --------------
+// console.log(googleConfig.web, "<<<");
 
 app.use("/api/user", userRoute);
 app.use("/api/stripe", Stripe);
+app.use("/api/listing", Listing);
+app.use("/api/google", google);
 app.listen(5000, () => {
   console.log(`Server Started at ${5000}`);
 });

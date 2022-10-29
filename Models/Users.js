@@ -6,8 +6,9 @@ const dataSchema = new mongoose.Schema({
     type: String,
   },
   email: {
-    required: true,
+    required: [true, "Email is required"],
     type: String,
+    unique: [true, "Email should be unique"],
   },
   password: {
     required: true,
@@ -18,7 +19,7 @@ const dataSchema = new mongoose.Schema({
     default: false,
   },
   userType: {
-    required: true,
+    required: [true, "User type is required (ADVERTISER / PUBLISHER)"],
     type: String,
     enum: ["ADVERTISER", "PUBLISHER"],
     // default: 'NEW'
