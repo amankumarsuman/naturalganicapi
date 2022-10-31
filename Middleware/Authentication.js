@@ -137,10 +137,19 @@ const emailFormat = async (req, res, next) => {
   var emailRegex =
     /^[-!#$%&'*+\/0-9=?A-Z^_a-z{|}~](\.?[-!#$%&'*+\/0-9=?A-Z^_a-z`{|}~])*@[a-zA-Z0-9](-*\.?[a-zA-Z0-9])*\.[a-zA-Z](-?[a-zA-Z0-9])+$/;
   const isCorrectEmailFormat = emailRegex.test(req.body.email);
+
+  var passwordRegex = /^(?=.*\d)(?=.*[!@#$%^&*])(?=.*[a-z])(?=.*[A-Z]).{8,}$/;
+  const checkPasswordValidation = passwordRegex.test(req.body.password);
   if (!isCorrectEmailFormat) {
     res
       .status(400)
       .send({ success: false, message: "Enter correct email address." });
+  } else if (!checkPasswordValidation) {
+    res.status(400).send({
+      success: false,
+      message:
+        "Password must have atlease 1 Uppercase, 1 lowercase, 1 Special Character, and length shouuld be greater than 8",
+    });
   } else {
     next();
   }

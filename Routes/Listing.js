@@ -40,6 +40,18 @@ router.post("/add", verifyRole, async (req, res) => {
   const checkSave = await addList.save();
   res.status(200).send({ success: true, message: "Added", data: checkSave });
 });
+router.post("/update/:id", verifyRole, async (req, res) => {
+  const updateListing = await Listings.findByIdAndUpdate(
+    req.params.id,
+    req.body,
+    { new: true }
+  );
+  res.status(200).send({
+    success: true,
+    message: "Updated Successfully",
+    data: updateListing,
+  });
+});
 
 router.get("/get-all", async (req, res) => {
   try {
@@ -51,6 +63,12 @@ router.get("/get-all", async (req, res) => {
       filterQuery = {
         ...filterQuery,
         userId: mongoose.Types.ObjectId(req.query.userId),
+      };
+    }
+    if (req.query._id) {
+      filterQuery = {
+        ...filterQuery,
+        _id: mongoose.Types.ObjectId(req.query._id),
       };
     }
 
@@ -90,6 +108,8 @@ router.get("/get-all", async (req, res) => {
           "user.fullName": 1,
           "user.email": 1,
           "user.userType": 1,
+          price: 1,
+          customField: 1,
         },
       },
       //   { $match: { userId: req.query.userId } },

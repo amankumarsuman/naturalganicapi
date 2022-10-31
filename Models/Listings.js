@@ -13,10 +13,12 @@ const dataSchema = new mongoose.Schema({
   noFollowLinkAllowed: { type: Boolean, default: true },
   doFollowLinkAllowed: { type: Boolean, default: true },
   indexedArticle: { type: String },
+  customField: { type: Object },
   linkedin: { type: String },
   googleNews: { type: String },
   socialShare: { type: String },
   facebook: { type: String },
+  price: { type: Number, default: 0 },
   twitter: { type: String },
 });
 
