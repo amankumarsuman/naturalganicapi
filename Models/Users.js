@@ -24,6 +24,58 @@ const dataSchema = new mongoose.Schema({
     enum: ["ADVERTISER", "PUBLISHER"],
     // default: 'NEW'
   },
+  firstName: {
+    type: String,
+    default: null,
+  },
+  lastName: {
+    type: String,
+    default: null,
+  },
+  countryOfResidency: {
+    type: String,
+    default: null,
+  },
+  address: {
+    type: String,
+    default: null,
+  },
+  firstName: {
+    type: String,
+    default: null,
+  },
+  representCompany: {
+    type: Boolean,
+    default: null,
+  },
+  companyName: {
+    type: String,
+    default: null,
+  },
+  country: {
+    type: String,
+    default: null,
+  },
+  companyId: {
+    type: String,
+    default: null,
+  },
+  bankTransfer: {
+    type: Boolean,
+    default: null,
+  },
+  cryptoCurrency: {
+    type: Boolean,
+    default: null,
+  },
+  tokenType: {
+    type: String,
+    default: null,
+  },
+  walletAddress: {
+    type: String,
+    default: null,
+  },
   jwtToken: String,
 });
 
