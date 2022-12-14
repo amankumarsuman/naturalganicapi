@@ -2,13 +2,14 @@ require("dotenv").config();
 
 const express = require("express");
 const mongoose = require("mongoose");
-
+const morgan = require("morgan");
 var bodyParser = require("body-parser");
 const { route } = require("./Routes/User");
 const Stripe = require("./Middleware/Stripe");
 const Listing = require("./Routes/Listing");
 const userRoute = require("./Routes/User");
 const google = require("./Routes/google");
+const handpickedRoutes = require("./Routes/handpicked");
 const mongoString = process.env.mongoUri;
 const googleConfig = require("./Middleware/googleConfig.json");
 let Parser = require("rss-parser");
@@ -30,6 +31,8 @@ app.use(cors({ origin: true, credentials: true }));
 
 // Put these statements before you define any routes.
 var bodyParser = require("body-parser");
+app.use(bodyParser.urlencoded({ extended: false }));
+app.use(bodyParser.json());
 //configuring rss parser package
 
 let parser = new Parser({
@@ -86,7 +89,9 @@ app.get("/api/ping", (req, res) => {
   var response = { answer: "pong" };
   res.status(200).json(response);
 });
-
+app.use(morgan("dev"));
+app.use("/uploads", express.static("uploads"));
+app.use("/api/handpicked", handpickedRoutes);
 app.use("/api/user", userRoute);
 app.use("/api/stripe", Stripe);
 app.use("/api/listing", Listing);
