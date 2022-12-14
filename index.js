@@ -11,6 +11,7 @@ const userRoute = require("./Routes/User");
 const google = require("./Routes/google");
 const mongoString = process.env.mongoUri;
 const googleConfig = require("./Middleware/googleConfig.json");
+let Parser = require("rss-parser");
 mongoose.connect(mongoString);
 const database = mongoose.connection;
 
@@ -29,6 +30,11 @@ app.use(cors({ origin: true, credentials: true }));
 
 // Put these statements before you define any routes.
 var bodyParser = require("body-parser");
+//configuring rss parser package
+
+let parser = new Parser({
+  headers: { "User-Agent": "Chrome" },
+});
 
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
@@ -49,6 +55,37 @@ app.use(function (req, res, next) {
 
 // --------------
 // console.log(googleConfig.web, "<<<");
+
+const bitcoinFeedUrl = "https://news.bitcoin.com/feed/";
+
+async function fetchRssFeed(feedUrl) {
+  let feed = await parser.parseURL(feedUrl);
+  return feed.items.map((item) => {
+    return {
+      title: item.title,
+      link: item.link,
+      date: item.pubDate,
+    };
+  });
+}
+
+app.get("/api/news", async (req, res) => {
+  await fetchRssFeed(bitcoinFeedUrl)
+    .then((data) => {
+      res.status(200).json(data);
+    })
+    .catch((err) => {
+      res.status(500).json({
+        status: "error",
+        message: "No news found",
+      });
+    });
+});
+
+app.get("/api/ping", (req, res) => {
+  var response = { answer: "pong" };
+  res.status(200).json(response);
+});
 
 app.use("/api/user", userRoute);
 app.use("/api/stripe", Stripe);
