@@ -32,15 +32,42 @@ const generateJWt = (data) => {
 const router = express.Router();
 
 //  add listing
-router.post("/add", verifyRole, async (req, res) => {
-  //   const {}=req.body
-  const addList = new Listings({
-    ...req.body,
-  });
-  const checkSave = await addList.save();
-  res.status(200).send({ success: true, message: "Added", data: checkSave });
-});
+// router.post("/add", verifyRole, async (req, res) => {
+//   //   const {}=req.body
+//   const addList = new Listings({
+//     ...req.body,
+//   });
+//   const checkSave = await addList.save();
+//   res.status(200).send({ success: true, message: "Added", data: checkSave });
+// });
+//modified add listing
 
+router.post("/add", async (req, res) => {
+  const addList = new Listings({
+    userId: new mongoose.Types.ObjectId(),
+    websiteLink: req.body.websiteLink,
+    offerTitle: req.body.offerTitle,
+    listingCategory: req.body.listingCategory,
+    price: req.body.price,
+    websiteLanguage: req.body.websiteLanguage,
+    noFollowLinkAllowed: req.body.noFollowLinkAllowed,
+    doFollowLinkAllowed: req.body.doFollowLinkAllowed,
+    indexedArticle: req.body.indexedArticle,
+    linkedin: req.body.linkedin,
+    googleNews: req.body.googleNews,
+    socialShare: req.body.socialShare,
+    facebook: req.body.facebook,
+    twitter: req.body.twitter,
+    // logo: req.body.logo,
+  });
+  addList.save().then((res) => {
+    res.status(200).json({
+      success: true,
+      message: "List Added successfully",
+      data: res,
+    });
+  });
+});
 router.get("/get-all", async (req, res) => {
   try {
     console.log(req.query);
@@ -83,6 +110,7 @@ router.get("/get-all", async (req, res) => {
           doFollowLinkAllowed: 1,
           indexedArticle: 1,
           linkedin: 1,
+          price: 1,
           googleNews: 1,
           socialShare: 1,
           facebook: 1,
@@ -113,6 +141,24 @@ router.get("/get-all", async (req, res) => {
     console.log(e);
   }
 });
+
+// router.get("/:userId", (req, res, next) => {
+//   const id = req.params.userId;
+//   UserDetails.findById(id)
+//     .exec()
+//     .then((doc) => {
+//       console.log(doc);
+//       if (doc) {
+//         res.status(200).json(doc);
+//       } else {
+//         res.status.apply(404).json({ message: " no valid id matched" });
+//       }
+//     })
+//     .catch((err) => {
+//       console.log(err);
+//       res.status(500).json({ error: err });
+//     });
+// });
 
 router.delete("/delete/:id", async (req, res, next) => {
   const deleted = await Listings.findByIdAndDelete(req.params.id);
