@@ -87,6 +87,7 @@ router.get("/get-all", async (req, res) => {
           socialShare: 1,
           facebook: 1,
           twitter: 1,
+          price:1,
           "user.fullName": 1,
           "user.email": 1,
           "user.userType": 1,

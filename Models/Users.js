@@ -76,6 +76,25 @@ const dataSchema = new mongoose.Schema({
     type: String,
     default: null,
   },
+  accNo:{
+    type:Number,
+    required: true,
+
+
+  },
+  swiftCode:{
+    type:String,
+    required: true,
+
+  },
+  bankName:{
+    type:String,
+    required: true,
+
+  },
+  image:{
+    type:String
+  },
   jwtToken: String,
 });
 

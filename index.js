@@ -72,7 +72,7 @@ async function fetchRssFeed(feedUrl) {
   });
 }
 
-app.get("/api/news", async (req, res) => {
+app.get("/api/getFeed", async (req, res) => {
   await fetchRssFeed(bitcoinFeedUrl)
     .then((data) => {
       res.status(200).json(data);
