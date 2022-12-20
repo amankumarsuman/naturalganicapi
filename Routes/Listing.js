@@ -1,6 +1,8 @@
 const express = require("express");
 const Users = require("../Models/Users");
 var bodyParser = require("body-parser");
+const multer = require("multer");
+
 // const mail = require("../Middleware/MailSetup");
 const bcrypt = require("bcrypt");
 const saltRounds = 10;
@@ -29,45 +31,76 @@ const generateJWt = (data) => {
   return token;
 };
 
+const storage = multer.diskStorage({
+  destination: function (req, file, cb) {
+    cb(null, "./uploads/");
+  },
+  filename: function (req, file, cb) {
+    cb(null, file.originalname);
+  },
+});
+
+const fileFilter = (req, file, cb) => {
+  // reject a file
+  if (file.mimetype === "image/jpeg" || file.mimetype === "image/png") {
+    cb(null, true);
+  } else {
+    cb(null, false);
+  }
+};
+
+const upload = multer({
+  storage: storage,
+  limits: {
+    fileSize: 1024 * 1024 * 5,
+  },
+  fileFilter: fileFilter,
+});
+
 const router = express.Router();
 
 //  add listing
-// router.post("/add", verifyRole, async (req, res) => {
-//   //   const {}=req.body
-//   const addList = new Listings({
-//     ...req.body,
-//   });
-//   const checkSave = await addList.save();
-//   res.status(200).send({ success: true, message: "Added", data: checkSave });
-// });
+router.post("/add", upload.single("image"),  async (req, res) => {
+  console.log(req.body)
+  // console.log(req.file)
+  const addList = new Listings({
+    ...req.body,
+    image: req.file.path,
+
+  });
+  const checkSave = await addList.save();
+  res.status(200).send({ success: true, message: "Added", data: checkSave });
+});
 //modified add listing
 
-router.post("/add", async (req, res) => {
-  const addList = new Listings({
-    userId: new mongoose.Types.ObjectId(),
-    websiteLink: req.body.websiteLink,
-    offerTitle: req.body.offerTitle,
-    listingCategory: req.body.listingCategory,
-    price: req.body.price,
-    websiteLanguage: req.body.websiteLanguage,
-    noFollowLinkAllowed: req.body.noFollowLinkAllowed,
-    doFollowLinkAllowed: req.body.doFollowLinkAllowed,
-    indexedArticle: req.body.indexedArticle,
-    linkedin: req.body.linkedin,
-    googleNews: req.body.googleNews,
-    socialShare: req.body.socialShare,
-    facebook: req.body.facebook,
-    twitter: req.body.twitter,
-    // logo: req.body.logo,
-  });
-  addList.save().then((res) => {
-    res.status(200).json({
-      success: true,
-      message: "List Added successfully",
-      data: res,
-    });
-  });
-});
+// router.post("/add", verifyRole, upload.single("image"), async (req, res) => {
+//   const addList = new Listings({
+//     userId: new mongoose.Types.ObjectId(),
+//     websiteLink: req.body.websiteLink,
+//     offerTitle: req.body.offerTitle,
+//     listingCategory: req.body.listingCategory,
+//     price: req.body.price,
+//     websiteLanguage: req.body.websiteLanguage,
+//     noFollowLinkAllowed: req.body.noFollowLinkAllowed,
+//     doFollowLinkAllowed: req.body.doFollowLinkAllowed,
+//     indexedArticle: req.body.indexedArticle,
+//     linkedin: req.body.linkedin,
+//     googleNews: req.body.googleNews,
+//     socialShare: req.body.socialShare,
+//     facebook: req.body.facebook,
+//     twitter: req.body.twitter,
+//     image: req.file.path,
+//     email:req.body.email,
+
+//   });
+//   addList.save().then((res) => {
+//     res.status(200).json({
+//       success: true,
+//       message: "List Added successfully",
+//       data: res,
+//     });
+//   });
+// });
 router.get("/get-all", async (req, res) => {
   try {
     console.log(req.query);
@@ -116,6 +149,7 @@ router.get("/get-all", async (req, res) => {
           facebook: 1,
           twitter: 1,
           price:1,
+          image:1,
           "user.fullName": 1,
           "user.email": 1,
           "user.userType": 1,

@@ -47,7 +47,7 @@ router.get("/", (req, res, next) => {
             _id: doc._id,
             request: {
               type: "GET",
-              url: "http://localhost:3000/api/handpicked/" + doc._id,
+              url: "http://localhost:3000/api/handpicked/",
             },
           };
         }),
@@ -90,7 +90,7 @@ router.post("/addHandpicked", upload.single("image"), (req, res, next) => {
           _id: result._id,
           request: {
             type: "GET",
-            url: "http://localhost:3000/api/handpicked/" + result._id,
+            url: "http://localhost:3000/api/handpicked/",
           },
         },
       });

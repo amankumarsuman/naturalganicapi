@@ -9,7 +9,7 @@ const dataSchema = new mongoose.Schema({
   offerTitle: String,
   listingCategory: String,
   price: Number,
-  logo: String,
+  image: String,
   websiteLanguage: String,
   noFollowLinkAllowed: { type: Boolean, default: true },
   doFollowLinkAllowed: { type: Boolean, default: true },
@@ -19,6 +19,7 @@ const dataSchema = new mongoose.Schema({
   socialShare: { type: String },
   facebook: { type: String },
   twitter: { type: String },
+  email:{type:String}
 });
 
 module.exports = mongoose.model("Listings", dataSchema);

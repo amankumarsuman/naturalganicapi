@@ -5,7 +5,8 @@ const mongoose = require("mongoose");
 const morgan = require("morgan");
 var bodyParser = require("body-parser");
 const { route } = require("./Routes/User");
-const Stripe = require("./Middleware/Stripe");
+// const Stripe = require("./Middleware/Stripe");
+const Stripe = require("./Routes/Stripe");
 const Listing = require("./Routes/Listing");
 const userRoute = require("./Routes/User");
 const google = require("./Routes/google");
@@ -33,6 +34,7 @@ app.use(cors({ origin: true, credentials: true }));
 var bodyParser = require("body-parser");
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
+app.use('/uploads', express.static('uploads'));
 //configuring rss parser package
 
 let parser = new Parser({
