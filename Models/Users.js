@@ -92,6 +92,11 @@ const dataSchema = new mongoose.Schema({
     required: true,
 
   },
+  accountNo:{
+    type:String,
+    required: true,
+
+  },
   image:{
     type:String
   },

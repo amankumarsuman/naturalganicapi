@@ -29,29 +29,23 @@ const upload = multer({
   fileFilter: fileFilter,
 });
 
-const Handpicked = require("../models/Handpicked");
+const Rss = require("../models/rss");
 
 router.get("/", (req, res, next) => {
-  Handpicked.find()
-    .select("title desc1 desc2 desc3 desc4 desc5 date _id image")
+    Rss.find()
+    .select("link  _id ")
     .exec()
     .then((docs) => {
       const response = {
         count: docs.length,
-        handpickedData: docs.map((doc) => {
+        rssData: docs.map((doc) => {
           return {
-            title: doc.name,
-            date: doc.date,
-            image: doc.image,
-            desc1: doc.desc1,
-            desc2: doc.desc2,
-            desc3: doc.desc3,
-            desc4: doc.desc4,
-            desc5: doc.desc5,
+            link: doc.link,
+           
             _id: doc._id,
             request: {
               type: "GET",
-              url: "http://localhost:3000/api/handpicked/",
+              url: "http://localhost:3000/rss/",
             },
           };
         }),
@@ -72,33 +66,25 @@ router.get("/", (req, res, next) => {
     });
 });
 
-router.post("/addHandpicked", upload.single("image"), (req, res, next) => {
-  const handpicked = new Handpicked({
+router.post("/addRss",  (req, res, next) => {
+  const rss = new Rss({
     _id: new mongoose.Types.ObjectId(),
-    title: req.body.title,
-    desc1: req.body.desc1,
-    desc2: req.body.desc2,
-    desc3: req.body.desc3,
-    desc4: req.body.desc4,
-    desc5: req.body.desc5,
-    date: req.body.date,
-    image: req.file.path,
+    link: req.body.link,
+    
   });
-  handpicked
+  rss
     .save()
     .then((result) => {
       console.log(result);
       res.status(201).json({
-        message: " Handpicked Created successfully",
-        handpickedData: {
-          title: result.title,
-          desc: result.desc,
-          date: result.date,
-          image: result.image,
+        message: " Rss Created successfully",
+        rssData: {
+          link: result.link,
+        
           _id: result._id,
           request: {
             type: "GET",
-            url: "http://localhost:3000/api/handpicked/",
+            
           },
         },
       });
@@ -113,14 +99,14 @@ router.post("/addHandpicked", upload.single("image"), (req, res, next) => {
 
 router.get("/:id", (req, res, next) => {
   const id = req.params.id;
-  Handpicked.findById(id)
-    .select("title date desc _id image")
+  Rss.findById(id)
+    .select("link  _id ")
     .exec()
     .then((doc) => {
       console.log("From database", doc);
       if (doc) {
         res.status(200).json({
-          product: doc,
+          rssLink: doc,
           request: {
             type: "GET",
             url: "",
@@ -137,5 +123,12 @@ router.get("/:id", (req, res, next) => {
       res.status(500).json({ error: err });
     });
 });
+
+//Delete by ID Method
+router.delete("/delete/:id", async (req, res) => {
+    const rss = await Rss.findByIdAndDelete(req.params.id);
+  
+    res.send({ success: true, data: rss, message: "Rss Deleted Successfully" });
+  });
 
 module.exports = router;

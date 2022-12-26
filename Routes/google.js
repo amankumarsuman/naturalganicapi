@@ -63,10 +63,10 @@ router.post("/auth", async (req, res) => {
   //   }
   //   const { name, email, picture } = ticket.getPayload();
   const data = new Users({
-    fullName: googleProvided.name,
-    email: googleProvided.email,
+    fullName: googleProvided?.name,
+    email: googleProvided?.email,
     password: token,
-    userType: req.body.userType,
+    userType: req.body?.userType,
     jwtToken: token,
     emailVerified: false,
   });

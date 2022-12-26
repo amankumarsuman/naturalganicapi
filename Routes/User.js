@@ -115,7 +115,7 @@ router.post("/forget-pass-confirmation", async (req, res) => {
 });
 
 router.post("/forget-pass", matchToken, async (req, res) => {
-  // console.log(req.user, "<<<<");
+  console.log(req.user, "<<<<");
   const token = await generateJWt({
     email: req.user.email,
     userType: req.user.userType,
