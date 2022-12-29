@@ -14,6 +14,7 @@ const google = require("./Routes/google");
 const handpickedRoutes = require("./Routes/handpicked");
 const adminUserRoutes =require("./Routes/adminUser")
 const rssRoutes =require("./Routes/rss")
+const passwordResetRoutes = require("./routes/PasswordReset");
 const mongoString = process.env.mongoUri;
 const googleConfig = require("./Middleware/googleConfig.json");
 let Parser = require("rss-parser");
@@ -127,6 +128,7 @@ app.use("/api/listing", Listing);
 app.use("/api/google", google);
 app.use("/admin", adminUserRoutes);
 app.use("/rss", rssRoutes);
+app.use("/api/password-reset", passwordResetRoutes);
 app.listen(5000, () => {
   console.log(`Server Started at ${5000}`);
 });
