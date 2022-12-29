@@ -1,6 +1,6 @@
 const bcrypt = require("bcrypt");
 var jwt = require("jsonwebtoken");
-const Users = require("../Models/Users");
+const Users = require("../models/Users");
 const SplitBearer = (req) => {
   return req.headers.authorization.split(" ")[1];
 };

@@ -202,7 +202,7 @@
 
 // module.exports = router;
 const express = require("express");
-const Users = require("../Models/Users");
+const Users = require("../models/Users");
 var bodyParser = require("body-parser");
 // const mail = require("../Middleware/MailSetup");
 const bcrypt = require("bcrypt");
@@ -210,7 +210,7 @@ const saltRounds = 10;
 var jwt = require("jsonwebtoken");
 const sendMail = require("../Middleware/MailSetup");
 const { verifyRole } = require("../Middleware/Authentication");
-const Listings = require("../Models/Listings");
+const Listings = require("../models/Listings");
 const { default: mongoose } = require("mongoose");
 var urlencodedParser = bodyParser.urlencoded({ extended: false });
 var jsonParser = bodyParser.json();

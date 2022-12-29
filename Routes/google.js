@@ -1,6 +1,6 @@
 const { OAuth2Client } = require("google-auth-library");
 const express = require("express");
-const Users = require("../Models/Users");
+const Users = require("../models/Users");
 var bodyParser = require("body-parser");
 // const mail = require("../Middleware/MailSetup");
 const googleConfig = require("../Middleware/googleConfig.json");
