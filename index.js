@@ -93,6 +93,7 @@ async function fetchRssFeed(feedUrl) {
 // console.log(linkarr)
 // console.log( link)
 app.get("/api/getFeed", async (req, res) => {
+  const responseArray = [];
   // console.log(link)
   // for(var i=0;i<link.length;i++){
     let link= await axios.get("http://localhost:5000/rss").then((res)=>res.data?.rssData)
@@ -101,7 +102,8 @@ for(var i=0;i<link?.length;i++){
 
   await fetchRssFeed(link[i]?.link)
     .then((data) => {
-      res.status(200).json(data);
+      // res.status(200).json(data);
+      responseArray.push(data);
     })
     .catch((err) => {
       res.status(500).json({
@@ -109,8 +111,8 @@ for(var i=0;i<link?.length;i++){
         message: "No news found",
       });
     });
-}
-  // }
+  };
+  res.status(200).json(responseArray);
 });
 
 app.get("/api/ping", (req, res) => {
