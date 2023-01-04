@@ -235,8 +235,9 @@ const generateJWt = (data) => {
 const router = express.Router();
 
 //  add listing
-router.post("/add", verifyRole, async (req, res) => {
+router.post("/add", async (req, res) => {
   //   const {}=req.body
+  console.log(req.body)
   const addList = new Listings({
     ...req.body,
   });
@@ -290,6 +291,7 @@ router.get("/get-all", async (req, res) => {
           socialShare: 1,
           facebook: 1,
           twitter: 1,
+          price:1,
           "user.fullName": 1,
           "user.email": 1,
           "user.userType": 1,

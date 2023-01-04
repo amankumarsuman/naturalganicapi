@@ -10,7 +10,8 @@ const { route } = require("./Routes/User");
 const Stripe = require("./Routes/Stripe");
 const Listing = require("./Routes/Listing");
 const userRoute = require("./Routes/User");
-const google = require("./Routes/google");
+const orderRoute = require("./Routes/orderHistory");
+// const google = require("./Routes/google");
 const handpickedRoutes = require("./Routes/handpicked");
 const adminUserRoutes =require("./Routes/adminUser")
 const rssRoutes =require("./Routes/rss")
@@ -127,9 +128,10 @@ app.use("/api/handpicked", handpickedRoutes);
 app.use("/api/user", userRoute);
 app.use("/api/stripe", Stripe);
 app.use("/api/listing", Listing);
-app.use("/api/google", google);
+// app.use("/api/google", google);
 app.use("/admin", adminUserRoutes);
 app.use("/rss", rssRoutes);
+app.use("/api/order", orderRoute);
 app.use("/api/password-reset", passwordResetRoutes);
 app.listen(5000, () => {
   console.log(`Server Started at ${5000}`);
