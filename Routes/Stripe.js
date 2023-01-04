@@ -8,6 +8,13 @@ const stripe = Stripe("sk_test_51MCNkxSFsMTnmESMMeFsJbVQlrzLJG5cxdRY0wdVkKRC2o6M
 
 const router = express.Router();
 
+
+// const stripe = require('stripe')('sk_test_4eC39HqLyjWDarjtT1zdp7dc');
+
+// const product = await stripe.products.retrieve(
+//   'prod_N6FENKKNCsQc0H'
+// );
+
 router.post("/create-checkout-session", async (req, res) => {
   const customer = await stripe.customers.create({
     metadata: {
@@ -88,8 +95,8 @@ router.post("/create-checkout-session", async (req, res) => {
     line_items,
     mode: "payment",
     customer: customer.id,
-    success_url: `http://localhost:3001/order-details`,
-    cancel_url: `http://localhost:3001/cart`,
+    success_url: `http://localhost:3000/order-details`,
+    cancel_url: `http://localhost:3000/cart`,
   });
 
   // res.redirect(303, session.url);
@@ -128,7 +135,7 @@ const createOrder = async (customer, data) => {
 };
 
 // Stripe webhoook
-
+const endpoint_secret = 'whsec_8da53b86bf73903d0b38cc570f2337ea6623f46cbc4f74c7de01550303fbaf53'
 router.post(
   "/webhook",
   express.json({ type: "application/json" }),
@@ -138,7 +145,7 @@ router.post(
 
     // Check if webhook signing is configured.
     let webhookSecret;
-    //webhookSecret = process.env.STRIPE_WEB_HOOK;
+    webhookSecret =endpoint_secret;
 
     if (webhookSecret) {
       // Retrieve the event by verifying the signature using the raw body and secret.

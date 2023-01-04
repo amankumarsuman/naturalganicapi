@@ -38,7 +38,7 @@ const generateJWt = (data) => {
 const router = express.Router();
 
 //Post Method
-router.post("/sign-up", emailFormat, signUpValidations, async (req, res) => {
+router.post("/sign-up", emailFormat,signUpValidations, async (req, res) => {
   const token = await generateJWt({
     email: req.body.email,
     userType: req.body.userType,

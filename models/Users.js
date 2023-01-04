@@ -2,7 +2,7 @@ const mongoose = require("mongoose");
 
 const dataSchema = new mongoose.Schema({
   fullName: {
-    required: true,
+    // required: true,
     type: String,
   },
   email: {
@@ -11,7 +11,7 @@ const dataSchema = new mongoose.Schema({
     unique: [true, "Email should be unique"],
   },
   password: {
-    required: true,
+    // required: true,
     type: String,
   },
   emailVerified: {
@@ -19,7 +19,7 @@ const dataSchema = new mongoose.Schema({
     default: false,
   },
   userType: {
-    required: [true, "User type is required (ADVERTISER / PUBLISHER)"],
+    // required: [true, "User type is required (ADVERTISER / PUBLISHER)"],
     type: String,
     enum: ["ADVERTISER", "PUBLISHER"],
     // default: 'NEW'
@@ -78,23 +78,23 @@ const dataSchema = new mongoose.Schema({
   },
   accNo:{
     type:Number,
-    required: true,
+    // required: true,
 
 
   },
   swiftCode:{
     type:String,
-    required: true,
+    // required: true,
 
   },
   bankName:{
     type:String,
-    required: true,
+    // required: true,
 
   },
   accountNo:{
     type:String,
-    required: true,
+    // required: true,
 
   },
   image:{
