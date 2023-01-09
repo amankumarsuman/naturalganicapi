@@ -2,7 +2,7 @@ const express = require("express");
 const router = express.Router();
 const mongoose = require("mongoose");
 const multer = require("multer");
-const { verifyRole } = require("../Middleware/Authentication");
+const { verifyRole, verifyRoleListing } = require("../Middleware/Authentication");
 
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
@@ -33,6 +33,7 @@ const upload = multer({
 const Handpicked = require("../models/Handpicked");
 
 router.get("/", (req, res, next) => {
+  const date = new Date();
   Handpicked.find()
     .select("title desc1 desc2 desc3 desc4 desc5 date _id image")
     .exec()
@@ -49,7 +50,7 @@ router.get("/", (req, res, next) => {
             desc3: doc.desc3,
             desc4: doc.desc4,
             desc5: doc.desc5,
-            lastUpdated:doc.lastUpdated,
+            lastUpdated:new Date(),
             _id: doc._id,
             request: {
               type: "GET",
@@ -74,10 +75,10 @@ router.get("/", (req, res, next) => {
     });
 });
 
-router.post("/addHandpicked",verifyRole,async(req, res, next) => {
+router.post("/addHandpicked",verifyRoleListing,async(req, res) => {
   console.log(req.body,"req")
   const handpicked = new Handpicked({
-    // _id: new mongoose.Types.ObjectId(),
+    _id: new mongoose.Types.ObjectId(),
     // title: req.body.title,
     // desc1: req.body.desc1,
     // desc2: req.body.desc2,
@@ -88,6 +89,7 @@ router.post("/addHandpicked",verifyRole,async(req, res, next) => {
     // image: req.file.path,
     // email:req.body.email,
     ...req.body,
+    // email: req.decode.email
   });
   const checkSave = await handpicked.save();
   res.status(200).send({ success: true, message: "Added Handpicked Successfully", data: checkSave });

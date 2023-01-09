@@ -2,7 +2,7 @@ const bcrypt = require("bcrypt");
 var jwt = require("jsonwebtoken");
 const Users = require("../models/Users");
 const SplitBearer = (req) => {
-  return req.headers.authorization.split(" ")[1];
+  console.log( req.headers.authorization.split(" ")[1]);
 };
 
 const generateJWt = (data) => {
@@ -105,8 +105,9 @@ const matchToken = async (req, res, next) => {
 
 //  it check session and role both
 
-const verifyRole = async (req, res, next) => {
+const verifyRole = async (req, res,next) => {
   console.log("verify");
+  console.log(req.body,"req");
   if (!req.body.email) {
     res.status(400).send({ success: false, message: "Email is required" });
   }
@@ -180,6 +181,69 @@ const siginInValidations = async (req, res, next) => {
     res.status(400).send({ success: false, message: "Password is required" });
   else next();
 };
+
+const requireAuth=(req,res,next)=>{
+// const token = req.cookies.jwt;
+//check json web token exists &  is verified
+// if(token){
+//   jwt.verify(token,"my token",)
+// }
+try {
+  jwt.verify(SplitBearer(req), process.env.JWT_SECRET, (err, decode) => {
+    if (err) {
+      res.status(401).send({ success: false, message: "Unauthorized !!!" });
+    // } else {
+    //   if (
+    //     req.body.email == decode.email &&
+    //     req.body.userType == decode.userType
+    //   ) {
+    //     console.log(decode, "<<<jwt");
+    //     next();
+    //   } else {
+    //     res.status(401).send({ success: false, message: "Unauthorized !!!" });
+    //   }
+    }else{
+      console.log(decode, "<<<jwt");
+      next()
+    }
+  });
+} catch (e) {
+  console.log(e, "<<<error");
+  res.status(401).send({ success: false, message: "Unauthorized !!!" });
+}
+}
+
+
+const verifyRoleListing = async (req, res,next) => {
+// const token = req.cookies.jwt;
+console.log(req.headers.authorization.split(" ")[1],"check token")
+  console.log("verify");
+  console.log(req.body,"reqauth");
+  // next()
+  if (!req.body.email) {
+    res.status(400).send({ success: false, message: "Email is required" });
+  }
+  try {
+    jwt.verify(req.headers.authorization.split(" ")[1], process.env.JWT_SECRET, (err, decode) => {
+      if (err) {
+        console.log(err,"error")
+        res.status(401).send({ success: false, message: "Unauthorized !!!" });
+      } else {
+        if (
+          req.body.email == decode.email
+        ) {
+          console.log(decode, "<<<jwt");
+          next();
+        } else {
+          res.status(401).send({ success: false, message: "Unauthorized !!!" });
+        }
+      }
+    });
+  } catch (e) {
+    console.log(e, "<<<error");
+    res.status(401).send({ success: false, message: "Unauthorized !!!" });
+  }
+};
 module.exports = {
   SplitBearer,
   verifyRole,
@@ -189,4 +253,6 @@ module.exports = {
   matchToken,
   checkSession,
   siginInValidations,
+  requireAuth,
+  verifyRoleListing
 };
