@@ -235,7 +235,7 @@ const generateJWt = (data) => {
 const router = express.Router();
 
 //  add listing
-router.post("/add", async (req, res) => {
+router.post("/add", verifyRole, async (req, res) => {
   //   const {}=req.body
   console.log(req.body)
   const addList = new Listings({
