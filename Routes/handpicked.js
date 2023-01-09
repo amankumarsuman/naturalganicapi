@@ -49,6 +49,7 @@ router.get("/", (req, res, next) => {
             desc3: doc.desc3,
             desc4: doc.desc4,
             desc5: doc.desc5,
+            lastUpdated:doc.lastUpdated,
             _id: doc._id,
             request: {
               type: "GET",
@@ -120,7 +121,7 @@ router.post("/addHandpicked",verifyRole,async(req, res, next) => {
 router.get("/:id", (req, res, next) => {
   const id = req.params.id;
   Handpicked.findById(id)
-    .select("title date desc _id image")
+    .select("title date desc1 desc2 desc3 desc4 desc5 _id image")
     .exec()
     .then((doc) => {
       console.log("From database", doc);
