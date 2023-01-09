@@ -2,6 +2,7 @@ const express = require("express");
 const router = express.Router();
 const mongoose = require("mongoose");
 const multer = require("multer");
+const { requireAuth } = require("../Middleware/Authentication");
 
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
@@ -31,7 +32,9 @@ const upload = multer({
 
 const Rss = require("../models/rss");
 
-router.get("/", (req, res, next) => {
+router.get("/", (req, res) => {
+  if(req.header('token')==="koinpratodayqproductrsstoken"){
+
     Rss.find()
     .select("link  _id ")
     .exec()
@@ -64,9 +67,14 @@ router.get("/", (req, res, next) => {
         error: err,
       });
     });
+  }
+  else{
+    res.status(401).send({ success: false, message: "Unauthorized !!!" });
+
+  }
 });
 
-router.post("/addRss",  (req, res, next) => {
+router.post("/addRss", requireAuth, (req, res) => {
   const rss = new Rss({
     _id: new mongoose.Types.ObjectId(),
     link: req.body.link,
@@ -97,7 +105,7 @@ router.post("/addRss",  (req, res, next) => {
     });
 });
 
-router.get("/:id", (req, res, next) => {
+router.get("/:id",requireAuth, (req, res) => {
   const id = req.params.id;
   Rss.findById(id)
     .select("link  _id ")

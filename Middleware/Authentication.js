@@ -183,34 +183,42 @@ const siginInValidations = async (req, res, next) => {
 };
 
 const requireAuth=(req,res,next)=>{
-// const token = req.cookies.jwt;
-//check json web token exists &  is verified
-// if(token){
-//   jwt.verify(token,"my token",)
-// }
-try {
-  jwt.verify(SplitBearer(req), process.env.JWT_SECRET, (err, decode) => {
-    if (err) {
-      res.status(401).send({ success: false, message: "Unauthorized !!!" });
-    // } else {
-    //   if (
-    //     req.body.email == decode.email &&
-    //     req.body.userType == decode.userType
-    //   ) {
-    //     console.log(decode, "<<<jwt");
-    //     next();
-    //   } else {
-    //     res.status(401).send({ success: false, message: "Unauthorized !!!" });
-    //   }
-    }else{
-      console.log(decode, "<<<jwt");
-      next()
-    }
-  });
-} catch (e) {
-  console.log(e, "<<<error");
+const token = req.header('token');
+console.log(token,"token")
+// next()
+// check json web token exists &  is verified
+if(token==="koinpratodayqproductrsstoken"){
+  console.log("verified");
+  // res.status(200).send({ success: true, message: "Added Handpicked Successfully" });
+
+  next()
+}else{
   res.status(401).send({ success: false, message: "Unauthorized !!!" });
+  // console.log("not verified user")
 }
+// try {
+//   jwt.verify(SplitBearer(req), process.env.JWT_SECRET, (err, decode) => {
+//     if (err) {
+//       res.status(401).send({ success: false, message: "Unauthorized !!!" });
+//     // } else {
+//     //   if (
+//     //     req.body.email == decode.email &&
+//     //     req.body.userType == decode.userType
+//     //   ) {
+//     //     console.log(decode, "<<<jwt");
+//     //     next();
+//     //   } else {
+//     //     res.status(401).send({ success: false, message: "Unauthorized !!!" });
+//     //   }
+//     }else{
+//       console.log(decode, "<<<jwt");
+//       next()
+//     }
+//   });
+// } catch (e) {
+//   console.log(e, "<<<error");
+//   res.status(401).send({ success: false, message: "Unauthorized !!!" });
+// }
 }
 
 

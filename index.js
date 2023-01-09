@@ -38,6 +38,7 @@ app.use(cors({ origin: true, credentials: true }));
 // Put these statements before you define any routes.
 var bodyParser = require("body-parser");
 const { default: axios } = require("axios");
+const { requireAuth } = require("./Middleware/Authentication");
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 app.use('/uploads', express.static('uploads'));
@@ -101,26 +102,32 @@ async function fetchRssFeed(feedUrl) {
 // console.log(linkarr)
 // console.log( link)
 app.get("/api/getFeed", async (req, res) => {
-  const responseArray = [];
-  // console.log(link)
-  // for(var i=0;i<link.length;i++){
-    let link= await axios.get("http://localhost:5000/rss").then((res)=>res.data?.rssData)
-    
-for(var i=0;i<link?.length;i++){
+  if(req.header('token')==="koinpratodayqproductrsstoken"){
 
-  await fetchRssFeed(link[i]?.link)
-    .then((data) => {
-      // res.status(200).json(data);
-      responseArray.push(data);
-    })
-    .catch((err) => {
-      res.status(500).json({
-        status: "error",
-        message: "No news found",
+    const responseArray = [];
+    // console.log(link)
+    // for(var i=0;i<link.length;i++){
+      let link= await axios.get("http://localhost:5000/rss").then((res)=>res.data?.rssData)
+      
+  for(var i=0;i<link?.length;i++){
+  
+    await fetchRssFeed(link[i]?.link)
+      .then((data) => {
+        // res.status(200).json(data);
+        responseArray.push(data);
+      })
+      .catch((err) => {
+        res.status(500).json({
+          status: "error",
+          message: "No news found",
+        });
       });
-    });
-  };
-  res.status(200).json(responseArray);
+    };
+    res.status(200).json(responseArray);
+  }else{
+  res.status(401).send({ success: false, message: "Unauthorized !!!" });
+
+  }
 });
 
 app.get("/api/ping", (req, res) => {

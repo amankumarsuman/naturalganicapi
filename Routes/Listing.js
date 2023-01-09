@@ -209,7 +209,7 @@ const bcrypt = require("bcrypt");
 const saltRounds = 10;
 var jwt = require("jsonwebtoken");
 const sendMail = require("../Middleware/MailSetup");
-const { verifyRole } = require("../Middleware/Authentication");
+const { verifyRole, requireAuth } = require("../Middleware/Authentication");
 const Listings = require("../models/Listings");
 const { default: mongoose } = require("mongoose");
 var urlencodedParser = bodyParser.urlencoded({ extended: false });
@@ -245,7 +245,7 @@ router.post("/add", async (req, res) => {
   res.status(200).send({ success: true, message: "Added", data: checkSave });
 });
 
-router.get("/get-all", async (req, res) => {
+router.get("/get-all",requireAuth, async (req, res) => {
   try {
     console.log(req.query);
 

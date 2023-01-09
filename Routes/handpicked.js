@@ -2,7 +2,7 @@ const express = require("express");
 const router = express.Router();
 const mongoose = require("mongoose");
 const multer = require("multer");
-const { verifyRole, verifyRoleListing } = require("../Middleware/Authentication");
+const { verifyRole, verifyRoleListing, requireAuth } = require("../Middleware/Authentication");
 
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
@@ -32,7 +32,7 @@ const upload = multer({
 
 const Handpicked = require("../models/Handpicked");
 
-router.get("/", (req, res, next) => {
+router.get("/",requireAuth, (req, res) => {
   const date = new Date();
   Handpicked.find()
     .select("title desc1 desc2 desc3 desc4 desc5 date _id image")
