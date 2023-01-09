@@ -2,6 +2,7 @@ const express = require("express");
 const router = express.Router();
 const mongoose = require("mongoose");
 const multer = require("multer");
+const { verifyRole } = require("../Middleware/Authentication");
 
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
@@ -72,43 +73,48 @@ router.get("/", (req, res, next) => {
     });
 });
 
-router.post("/addHandpicked", upload.single("image"), (req, res, next) => {
+router.post("/addHandpicked",verifyRole,async(req, res, next) => {
+  console.log(req.body,"req")
   const handpicked = new Handpicked({
-    _id: new mongoose.Types.ObjectId(),
-    title: req.body.title,
-    desc1: req.body.desc1,
-    desc2: req.body.desc2,
-    desc3: req.body.desc3,
-    desc4: req.body.desc4,
-    desc5: req.body.desc5,
-    date: req.body.date,
-    image: req.file.path,
+    // _id: new mongoose.Types.ObjectId(),
+    // title: req.body.title,
+    // desc1: req.body.desc1,
+    // desc2: req.body.desc2,
+    // desc3: req.body.desc3,
+    // desc4: req.body.desc4,
+    // desc5: req.body.desc5,
+    // date: req.body.date,
+    // image: req.file.path,
+    // email:req.body.email,
+    ...req.body,
   });
-  handpicked
-    .save()
-    .then((result) => {
-      console.log(result);
-      res.status(201).json({
-        message: " Handpicked Created successfully",
-        handpickedData: {
-          title: result.title,
-          desc: result.desc,
-          date: result.date,
-          image: result.image,
-          _id: result._id,
-          request: {
-            type: "GET",
-            url: "http://localhost:3000/api/handpicked/",
-          },
-        },
-      });
-    })
-    .catch((err) => {
-      console.log(err);
-      res.status(500).json({
-        error: err,
-      });
-    });
+  const checkSave = await handpicked.save();
+  res.status(200).send({ success: true, message: "Added Handpicked Successfully", data: checkSave });
+  // handpicked
+  //   .save()
+  //   .then((result) => {
+  //     console.log(result);
+  //     res.status(201).json({
+  //       message: " Handpicked Created successfully",
+  //       handpickedData: {
+  //         title: result.title,
+  //         desc: result.desc,
+  //         date: result.date,
+  //         image: result.image,
+  //         _id: result._id,
+  //         request: {
+  //           type: "GET",
+  //           url: "http://localhost:3000/api/handpicked/",
+  //         },
+  //       },
+  //     });
+  //   })
+  //   .catch((err) => {
+  //     console.log(err);
+  //     res.status(500).json({
+  //       error: err,
+  //     });
+  //   });
 });
 
 router.get("/:id", (req, res, next) => {

@@ -9,6 +9,7 @@ const handpickedSchema = mongoose.Schema({
   desc4: { type: String },
   desc5: { type: String },
   date: { type: String },
+  lastUpdated: { type: String },
 
   image: { type: String },
 });

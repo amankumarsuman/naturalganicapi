@@ -82,7 +82,14 @@ async function fetchRssFeed(feedUrl) {
       title: item.title,
       link: item.link,
       date: item.pubDate,
-      content:item.content
+      content:item.content,
+      category:item.categories,
+      creator:item.creator,
+      summary:item.summary,
+      contentSnippet:item.contentSnippet,
+      enclosure:item?.enclosure,
+      id:item?.guid
+
       //websitename
       //
     };
