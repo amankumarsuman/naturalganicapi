@@ -30,6 +30,8 @@
     "passport": "^0.6.0",
     "passport-google-oauth20": "^2.0.0",
     "rss-parser": "^3.12.0",
+    "node-json-db": "^1.1.0",
+    "speakeasy": "^2.0.0",
     "stripe": "^10.15.0"
   }
 }

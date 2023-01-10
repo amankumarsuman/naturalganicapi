@@ -54,7 +54,7 @@ router.get("/",requireAuth, (req, res) => {
             _id: doc._id,
             request: {
               type: "GET",
-              url: "http://localhost:3000/api/handpicked/",
+              url: "https://user.koinpr.com/api/handpicked/",
             },
           };
         }),
@@ -107,7 +107,7 @@ router.post("/addHandpicked",verifyRoleListing,async(req, res) => {
   //         _id: result._id,
   //         request: {
   //           type: "GET",
-  //           url: "http://localhost:3000/api/handpicked/",
+  //           url: "https://user.koinpr.com/api/handpicked/",
   //         },
   //       },
   //     });
