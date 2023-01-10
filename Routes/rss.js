@@ -33,7 +33,7 @@ const upload = multer({
 const Rss = require("../models/rss");
 
 router.get("/", (req, res) => {
-  if(req.header('token')==="koinpratodayqproductrsstoken"){
+  // if(req.header('token')==="koinpratodayqproductrsstoken"){
 
     Rss.find()
     .select("link  _id ")
@@ -67,14 +67,14 @@ router.get("/", (req, res) => {
         error: err,
       });
     });
-  }
-  else{
-    res.status(401).send({ success: false, message: "Unauthorized !!!" });
+  // }
+  // else{
+  //   res.status(401).send({ success: false, message: "Unauthorized !!!" });
 
-  }
+  // }
 });
 
-router.post("/addRss", requireAuth, (req, res) => {
+router.post("/addRss", (req, res) => {
   const rss = new Rss({
     _id: new mongoose.Types.ObjectId(),
     link: req.body.link,
@@ -131,6 +131,49 @@ router.get("/:id",requireAuth, (req, res) => {
       res.status(500).json({ error: err });
     });
 });
+router.get("/:category",requireAuth, (req, res) => {
+  const category = req.params.category;
+  Rss.find(category).then((doc)=>{
+    console.log(doc)
+  })
+  // Rss.findById(category)
+  //   .select("link  _id ")
+  //   .exec()
+  //   .then((doc) => {
+  //     console.log("From database", doc);
+  //     if (doc) {
+  //       res.status(200).json({
+  //         rssLink: doc,
+  //         request: {
+  //           type: "GET",
+  //           url: "",
+  //         },
+  //       });
+  //     } else {
+  //       res
+  //         .status(404)
+  //         .json({ message: "No valid entry found for provided ID" });
+  //     }
+  //   })
+  //   .catch((err) => {
+  //     console.log(err);
+  //     res.status(500).json({ error: err });
+  //   });
+
+  // const filteredCategory = data.filter(user => {
+  //   let isValid = true;
+  //   for (key in filters) {
+  //     console.log(key, user[key], filters[key]);
+  //     isValid = isValid && user[key] == filters[key];
+  //   }
+  //   return isValid;
+  // });
+  // res.send(filteredCategory);
+});
+  
+
+
+// });
 
 //Delete by ID Method
 router.delete("/delete/:id", async (req, res) => {
