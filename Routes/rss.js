@@ -48,7 +48,7 @@ router.get("/", (req, res) => {
             _id: doc._id,
             request: {
               type: "GET",
-              url: "http://localhost:3000/rss/",
+              url: "https://user.koinpr.com/rss/",
             },
           };
         }),
