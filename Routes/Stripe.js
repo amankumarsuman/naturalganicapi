@@ -95,8 +95,8 @@ router.post("/create-checkout-session", async (req, res) => {
     line_items,
     mode: "payment",
     customer: customer.id,
-    success_url: `http://localhost:3000/order-details`,
-    cancel_url: `http://localhost:3000/cart`,
+    success_url: `https://www.koinpr.com/order-details`,
+    cancel_url: `https://www.koinpr.com/cart`,
   });
 
   // res.redirect(303, session.url);
