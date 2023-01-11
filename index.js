@@ -14,6 +14,7 @@ const orderRoute = require("./Routes/orderHistory");
 // const google = require("./Routes/google");
 const handpickedRoutes = require("./Routes/handpicked");
 const adminUserRoutes =require("./Routes/adminUser")
+var path = require("path");
 const rssRoutes =require("./Routes/rss")
 const straightFromTheWorldRoutes =require("./Routes/straightFromTheWorld")
 const passwordResetRoutes = require("./Routes/PasswordReset");
@@ -43,9 +44,13 @@ const { default: axios } = require("axios");
 const { requireAuth } = require("./Middleware/Authentication");
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
-app.use('/uploads', express.static('uploads'));
-//configuring rss parser package
+// app.use('/uploads', express.static('uploads'));
 
+// view engine setup
+app.set("views", path.join(__dirname, "views"));
+app.set("view engine", "jade");
+//configuring rss parser package
+app.use(express.static(path.join(__dirname, "uploads")));
 let parser = new Parser({
   headers: { "User-Agent": "Chrome" },
 });

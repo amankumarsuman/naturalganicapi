@@ -205,6 +205,7 @@ const express = require("express");
 const Users = require("../models/Users");
 var bodyParser = require("body-parser");
 // const mail = require("../Middleware/MailSetup");
+const upload = require("../common");
 const bcrypt = require("bcrypt");
 const saltRounds = 10;
 var jwt = require("jsonwebtoken");
@@ -212,6 +213,14 @@ const sendMail = require("../Middleware/MailSetup");
 const { verifyRole, requireAuth } = require("../Middleware/Authentication");
 const Listings = require("../models/Listings");
 const { default: mongoose } = require("mongoose");
+const { uploadFile } = require("../s3");
+const fs = require("fs");
+const util = require("util");
+const unlinkFile = util.promisify(fs.unlink);
+
+
+
+
 var urlencodedParser = bodyParser.urlencoded({ extended: false });
 var jsonParser = bodyParser.json();
 const getHashPass = async (pass) => {
@@ -235,11 +244,20 @@ const generateJWt = (data) => {
 const router = express.Router();
 
 //  add listing
-router.post("/add", verifyRole, async (req, res) => {
+// upload.single("image"),
+router.post("/add", requireAuth,upload.single("image"), async (req, res) => {
   //   const {}=req.body
   console.log(req.body)
+  console.log(req.file);
+  // uploading to AWS S3
+  const result = await uploadFile(req.file);  // Calling above function in s3.js
+  console.log("S3 response", result);
+  // You may apply filter, resize image before sending to client
+  // Deleting from local if uploaded in S3 bucket
+  await unlinkFile(req.file.path);
   const addList = new Listings({
     ...req.body,
+    image:req.file.path,
   });
   const checkSave = await addList.save();
   res.status(200).send({ success: true, message: "Added", data: checkSave });
@@ -292,6 +310,7 @@ router.get("/get-all",requireAuth, async (req, res) => {
           facebook: 1,
           twitter: 1,
           price:1,
+          image:1,
           "user.fullName": 1,
           "user.email": 1,
           "user.userType": 1,
