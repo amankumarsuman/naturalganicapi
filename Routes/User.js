@@ -3,13 +3,15 @@ const Users = require("../models/Users");
 var bodyParser = require("body-parser");
 // const mail = require("../Middleware/MailSetup");
 const bcrypt = require("bcrypt");
+const nodemailer = require("nodemailer");
+
 const saltRounds = 10;
 var jwt = require("jsonwebtoken");
 const uuid = require("uuid");
 const JsonDB = require('node-json-db').JsonDB;
 const Config = require('node-json-db/dist/lib/JsonDBConfig').Config;
 const speakeasy = require("speakeasy");
-
+const UserOtpVerification=require("../models/emailVerification")
 // const sendMail = require("../Middleware/MailSetup");
 const {
   checkSessionsOrGenerateNew,
@@ -48,10 +50,14 @@ const router = express.Router();
 
 //Post Method
 router.post("/sign-up", emailFormat,signUpValidations, async (req, res) => {
+  // const id = uuid.v4();
+ 
   const token = await generateJWt({
     email: req.body.email,
     userType: req.body.userType,
   });
+//  const path = `/user/${_id}`;
+const temp_secret = speakeasy.generateSecret();
 
   const data = new Users({
     fullName: req.body.fullName,
@@ -60,13 +66,17 @@ router.post("/sign-up", emailFormat,signUpValidations, async (req, res) => {
     userType: req.body.userType,
     jwtToken: token,
     emailVerified: false,
+    // path,
+    secret:temp_secret
   });
 
   try {
-    const dataToSave = await data.save();
+    const dataToSave = await data.save().then((result)=>{
+      sendOtpVerificationEmail(result,res, temp_secret.base32)
+      res.status(200).send({ success: true, data:result,secret: temp_secret.base32 });
+    });
 
-    sendMail(dataToSave.email);
-    res.status(200).send({ success: true, dataToSave });
+    // sendMail(dataToSave.email);
   } catch (error) {
     // console.log(error);
     if (error.message.match("email_1 dup key")) {
@@ -186,7 +196,7 @@ router.delete("/delete/:id", async (req, res) => {
 
   res.send({ success: true, data: user, message: "User Deleted" });
 });
-router.post("/api/register", (req, res) => {
+router.post("/register", (req, res) => {
   const id = uuid.v4();
   try {
     const path = `/user/${id}`;
@@ -203,7 +213,7 @@ router.post("/api/register", (req, res) => {
 })
 
 
-router.post("/api/verify", (req,res) => {
+router.post("/verify", (req,res) => {
   const { userId, token } = req.body;
   try {
     // Retrieve user from database
@@ -253,6 +263,141 @@ router.post("/api/validate", (req,res) => {
     console.error(error);
     res.status(500).json({ message: 'Error retrieving user'})
   };
+})
+
+//send otp verification email
+
+const sendOtpVerificationEmail=async({_id,email},res)=>{
+  try {
+    const otp=`${Math.floor(1000+Math.random()*9000)}`;
+
+    //mail option
+
+    const mailOption={
+      from: "amankumar.dev98@gmail.com",
+			to: email,
+			subject: "Verify Your Email",
+			html:`<p>Enter <b>${otp} </b> in the App to verify your email address</p>
+      <p>This code <b>expires in 1 hour</b>.</p>
+      `
+    };
+
+    //hash the otp
+    const saltRounds=10;
+   const hashedOtp= await bcrypt.hash(otp,saltRounds);
+   const newOtpVerification=await new UserOtpVerification({
+    userId:_id,
+    otp:hashedOtp,
+    createdAt:Date.now(),
+    expiresAt:Date.now()+3600000,
+   });
+
+   //save otp records to database
+   await newOtpVerification.save()
+
+   const transporter = await nodemailer.createTransport({
+    host: "smtp.gmail.com",
+    // service: process.env.SERVICE,
+          service:"gmail",
+    port: 587,
+    secure: true,
+    auth: {
+      user: "amankumar.dev98@gmail.com", // generated ethereal user
+    pass: "rkghkhglilxqwsux", // generated ethereal password
+    },
+  });
+  await transporter.sendMail(mailOption);
+  res.json({
+    status:"Pending",
+    message:"Verification otp sent to the email",
+    data:{
+      userId:_id,
+      email,
+    },
+  });
+  } catch (error) {
+    res.json({
+      status:"Failed",
+      message:error.message,
+    });
+  }
+}
+
+//verify email with otp
+
+router.post("/verifyOtp",async (req,res)=>{
+  try {
+    let {userId,otp}=req.body;
+    if(!userId || !otp){
+      throw Error("Empty otp details are not allowed, Enter otp and userid");
+
+    }else{
+      const UserOtpVerificationRecords=await UserOtpVerification.find({
+        userId,
+      });
+      if(UserOtpVerificationRecords.length<=0){
+        throw new Error("Account record doesn't exist or has been verified already. Please signup again or enter correct details")
+      }else{
+
+        //user otp exists
+
+        const {expiresAt} = UserOtpVerificationRecords[0];
+        const hashedOtp=UserOtpVerificationRecords[0].otp;
+
+        if(expiresAt<Date.now()){
+
+          //user otp records expired
+          await UserOtpVerification.deleteMany({userId});
+          throw new Error("Code has Expired.Please Request again.");
+        }else{
+         const validOtp=await bcrypt.compare(otp,hashedOtp);
+         if(!validOtp){
+          //entered otp is wrong
+          throw new Error("Invalid OTP Entered.check you inbox again");
+         }else{
+          //success
+
+          await Users.updateOne({_id:userId},{emailVerified:true});
+          await UserOtpVerification.deleteMany({userId});
+          res.json({
+            status:"Verified",
+            message:`User email verified successfully.`,
+          })
+         }
+        }
+      }
+    }
+  } catch (error) {
+    res.json({
+      status:"Failed",
+      message:error.message,
+    })
+  }
+
+  //resend verification otp
+
+  router.post("/resendOtpVerification",async(req,res)=>
+  {
+  try{
+    let {userId,email}=req.body;
+
+    if(!userId || !email){
+      throw Error("Empty user Details not allowed, either userId or email is not entered");
+
+    }else{
+
+      //delete existing records and resend it 
+
+      await UserOtpVerification.deleteMany({userId});
+      sendOtpVerificationEmail({_id:userId,email},res);
+    }
+  }catch (error){
+res.json({
+  status:"Failed",
+  message:error.message,
+})
+  }
+  })
 })
 module.exports = router;
 // module.exports = generateJWt;

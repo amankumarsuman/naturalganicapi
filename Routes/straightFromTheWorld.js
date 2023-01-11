@@ -14,7 +14,9 @@ async function fetchRssFeed(feedUrl) {
     // console.log(el)
     // rssLink.push(el.link))
     let feed = await parser.parseURL(feedUrl);
+  
     return feed.items.map((item) => {
+      
       // console.log(item)
       // if(item?.categories.includes(categoryParam)){
       //   return
@@ -31,6 +33,7 @@ async function fetchRssFeed(feedUrl) {
         creator:item.creator,
         summary:item.summary,
         contentSnippet:item.contentSnippet,
+      //  image:parcer.item.content,
         // enclosure:item?.enclosure,
         id:item?.guid,
               });
@@ -41,7 +44,7 @@ async function fetchRssFeed(feedUrl) {
 
 //    })
 
-
+console.log(item.content,"content")
       return {
         title: item.title,
         link: item.link,
@@ -78,6 +81,7 @@ async function fetchRssFeed(feedUrl) {
         .then((data) => {
         //     console.log(data,"data")
         //   res.status(200).json(data);
+
           responseArray.push(data);
 //           const straightFromTheWorlds=new straightFromTheWorld({
 //     _id: new mongoose.Types.ObjectId(),
@@ -96,6 +100,8 @@ async function fetchRssFeed(feedUrl) {
           });
         });
       };
+// console.log(data.content,"content")
+
       res.status(200).json({message:"Rss Feed Data Fetched Successfully",feedData:responseArray});
     // }else{
     // res.status(401).send({ success: false, message: "Unauthorized !!!" });

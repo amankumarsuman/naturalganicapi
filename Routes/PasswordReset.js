@@ -33,7 +33,7 @@ router.post("/", async (req, res) => {
 			}).save();
 		}
 
-		const url = `http://localhost:3000/password-reset/${user._id}/${token.token}/`;
+		const url = `https://www.koinpr.com/password-reset/${user._id}/${token.token}/`;
 		await sendEmail(user.email, "Password Reset", url);
 
 		res
