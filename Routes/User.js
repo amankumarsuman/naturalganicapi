@@ -307,14 +307,14 @@ const sendOtpVerificationEmail=async({_id,email},res)=>{
     },
   });
   await transporter.sendMail(mailOption);
-  res.json({
-    status:"Pending",
-    message:"Verification otp sent to the email",
-    data:{
-      userId:_id,
-      email,
-    },
-  });
+  // res.json({
+  //   status:"Pending",
+  //   message:"Verification otp sent to the email",
+  //   data:{
+  //     userId:_id,
+  //     email,
+  //   },
+  // });
   } catch (error) {
     res.json({
       status:"Failed",
