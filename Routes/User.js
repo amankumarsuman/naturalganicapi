@@ -283,7 +283,7 @@ const sendOtpVerificationEmail=async({_id,email},res)=>{
     };
 
     //hash the otp
-    const saltRounds=10;
+    // const saltRounds=10;
    const hashedOtp= await bcrypt.hash(otp,saltRounds);
    const newOtpVerification=await new UserOtpVerification({
     userId:_id,

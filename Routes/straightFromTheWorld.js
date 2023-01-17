@@ -14,10 +14,15 @@ async function fetchRssFeed(feedUrl) {
     // console.log(el)
     // rssLink.push(el.link))
     let feed = await parser.parseURL(feedUrl);
-  
-    return feed.items.map((item) => {
-      
-      // console.log(item)
+//     let feedImage =await  parser.parseString(feed.item?.content,(tes)=>{
+// console.log(res,"res")
+//     })
+    // console.log(feed.image.url,"image")
+    
+    return feed.items.map((item,i) => {
+    // const image=feed[i].image
+      // const image=item.content.split("=")
+      console.log(feed,"item")
       // if(item?.categories.includes(categoryParam)){
       //   return
       // }
@@ -31,8 +36,12 @@ async function fetchRssFeed(feedUrl) {
         content:item.content,
         category:item.categories,
         creator:item.creator,
+        // imageLink:image[3],
+        imageLink:item?.image,
+
         summary:item.summary,
         contentSnippet:item.contentSnippet,
+        // imageLink:item.content.charAt(0),
       //  image:parcer.item.content,
         // enclosure:item?.enclosure,
         id:item?.guid,
@@ -44,7 +53,7 @@ async function fetchRssFeed(feedUrl) {
 
 //    })
 
-console.log(item.content,"content")
+// console.log(parcer.par(item.content),"content")
       return {
         title: item.title,
         link: item.link,
@@ -54,8 +63,18 @@ console.log(item.content,"content")
         creator:item.creator,
         summary:item.summary,
         contentSnippet:item.contentSnippet,
-        enclosure:item?.enclosure,
-        id:item?.guid
+        // enclosure:item?.enclosure,
+        id:item?.guid,
+        // imageLink:item.content["src"],
+        // imageLink:item.content.charAt(0),
+        imageLink:item?.image,
+        // imageLink:image[3].trim(),
+
+
+        // imageLink2:item.enclosure?.url,
+        
+
+
   
         //websitename
         //
@@ -79,7 +98,7 @@ console.log(item.content,"content")
     
       await fetchRssFeed(link[i]?.link)
         .then((data) => {
-        //     console.log(data,"data")
+            // console.log(data,"data")
         //   res.status(200).json(data);
 
           responseArray.push(data);
@@ -93,16 +112,18 @@ console.log(item.content,"content")
 // res.status(200).send({ success: true, feed });
 
         })
-        .catch((err) => {
-          res.status(500).json({
-            status: "error",
-            message: "No news found",
-          });
-        });
+        // .catch((err) => {
+        //   res.status(500).json({
+        //     status: "error",
+        //     message: "No news found",
+        //   });
+        // });
+
+        res.status(200).json({message:"Rss Feed Data Fetched Successfully",feedData:responseArray});
       };
 // console.log(data.content,"content")
 
-      res.status(200).json({message:"Rss Feed Data Fetched Successfully",feedData:responseArray});
+      // res.status(200).json({message:"Rss Feed Data Fetched Successfully",feedData:responseArray});
     // }else{
     // res.status(401).send({ success: false, message: "Unauthorized !!!" });
   

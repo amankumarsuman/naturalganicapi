@@ -10,8 +10,9 @@ const straightFromTheWorldSchema = mongoose.Schema({
   creator: { type: String },
   summary: { type: String },
   contentSnippet: { type: String },
-//   enclosure: { type: Image },
+  enclosure: { type: String },
   id: { type: String },
+  imageLink:String,
   
   
   

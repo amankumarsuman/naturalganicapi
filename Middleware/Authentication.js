@@ -48,10 +48,17 @@ const checkSessionsOrGenerateNew = async (user, res, next, callBack) => {
 
 // this only check session
 const checkSession = async (req, res, next) => {
-  console.log("checking session");
-  jwt.verify(SplitBearer(req), process.env.JWT_SECRET, (err, decode) => {
+  console.log("checking session",SplitBearer(req));
+  // Header names in Express are auto-converted to lowercase
+let token = req.headers['x-access-token'] || req.headers['authorization']; 
+
+// Remove Bearer from string
+token = token.replace(/^Bearer\s+/, "");
+console.log("token",token);
+
+  jwt.verify(token, process.env.JWT_SECRET, (err, decode) => {
     if (err) {
-      console.log("error ");
+      console.log("error ",err);
       res.status(401).send({ success: false, message: "Session Expired !!!" });
     } else {
       console.log(decode);
