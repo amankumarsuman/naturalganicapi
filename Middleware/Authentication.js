@@ -1,9 +1,13 @@
 const bcrypt = require("bcrypt");
 var jwt = require("jsonwebtoken");
 const Users = require("../models/Users");
-const SplitBearer = (req) => {
-  console.log( req.headers.authorization.split(" ")[1]);
-};
+
+
+
+
+
+
+
 
 const generateJWt = (data) => {
   console.log(data, "<<<<datasss");
@@ -48,13 +52,13 @@ const checkSessionsOrGenerateNew = async (user, res, next, callBack) => {
 
 // this only check session
 const checkSession = async (req, res, next) => {
-  console.log("checking session",SplitBearer(req));
+  // console.log("checking session",SplitBearer(req));
   // Header names in Express are auto-converted to lowercase
 let token = req.headers['x-access-token'] || req.headers['authorization']; 
 
+console.log("token",token);
 // Remove Bearer from string
 token = token.replace(/^Bearer\s+/, "");
-console.log("token",token);
 
   jwt.verify(token, process.env.JWT_SECRET, (err, decode) => {
     if (err) {
@@ -119,7 +123,11 @@ const verifyRole = async (req, res,next) => {
     res.status(400).send({ success: false, message: "Email is required" });
   }
   try {
-    jwt.verify(SplitBearer(req), process.env.JWT_SECRET, (err, decode) => {
+    let token = req.headers['x-access-token'] || req.headers['authorization']; 
+
+// Remove Bearer from string
+token = token.replace(/^Bearer\s+/, "");
+    jwt.verify(token, process.env.JWT_SECRET, (err, decode) => {
       if (err) {
         res.status(401).send({ success: false, message: "Unauthorized !!!" });
       } else {
@@ -260,7 +268,7 @@ console.log(req.headers.authorization.split(" ")[1],"check token")
   }
 };
 module.exports = {
-  SplitBearer,
+ 
   verifyRole,
   checkSessionsOrGenerateNew,
   emailFormat,
