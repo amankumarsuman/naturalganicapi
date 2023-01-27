@@ -76,7 +76,7 @@ const JWT_SECRET =
     password: req.body.password,
   
     fullName: req.body.fullName,
-    image: req.file.path,
+    // image: req.file.path,
 
   });
   user

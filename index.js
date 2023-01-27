@@ -19,6 +19,8 @@ const rssRoutes =require("./Routes/rss")
 const straightFromTheWorldRoutes =require("./Routes/straightFromTheWorld")
 const passwordResetRoutes = require("./Routes/PasswordReset");
 const ShowScreenRoutes = require("./Routes/screen");
+const withdrawRoutes = require("./Routes/withdraw");
+const orderDetailsRoutes = require("./Routes/order");
 const mongoString = process.env.mongoUri;
 const googleConfig = require("./Middleware/googleConfig.json");
 let Parser = require("rss-parser");
@@ -236,13 +238,14 @@ app.use("/api/handpicked", handpickedRoutes);
 app.use("/api/user", userRoute);
 app.use("/api/stripe", Stripe);
 app.use("/api/listing", Listing);
-// app.use("/api/google", google);
+app.use("/api/orderDetails", orderDetailsRoutes);
 app.use("/admin", adminUserRoutes);
 app.use("/rss", rssRoutes);
 app.use("/api/rssFeed", straightFromTheWorldRoutes);
 app.use("/api/order", orderRoute);
 app.use("/api/password-reset", passwordResetRoutes);
 app.use("/api/showScreen", ShowScreenRoutes);
+app.use("/api/withdraw", withdrawRoutes);
 app.listen(5000, () => {
   console.log(`Server Started at ${5000}`);
 });

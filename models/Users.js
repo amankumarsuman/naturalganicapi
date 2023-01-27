@@ -68,6 +68,10 @@ const dataSchema = new mongoose.Schema({
     type: Boolean,
     default: null,
   },
+  userVerified: {
+    type: Boolean,
+    default: null,
+  },
   tokenType: {
     type: String,
     default: null,
@@ -91,6 +95,9 @@ const dataSchema = new mongoose.Schema({
     type:String,
     // required: true,
 
+  },
+  telegram:{
+    type:String
   },
   accountNo:{
     type:String,

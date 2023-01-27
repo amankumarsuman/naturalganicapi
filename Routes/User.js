@@ -182,16 +182,17 @@ router.get("/getOne/:id", (req, res) => {
 router.patch("/update/:id", async (req, res) => {
   console.log(req.body);
   const user = await Users.findByIdAndUpdate(req.params.id, req.body, {
-    new: true,
+    // new: true,
   });
 
   res
     .status(200)
-    .send({ success: true, message: "User Successfully updated", user });
+    .send({ success: true, message: "User Data Successfully updated", user });
 });
 
 //Delete by ID Method
 router.delete("/delete/:id", async (req, res) => {
+  console.log(req.params.id)
   const user = await Users.findByIdAndDelete(req.params.id);
 
   res.send({ success: true, data: user, message: "User Deleted" });
@@ -374,30 +375,38 @@ router.post("/verifyOtp",async (req,res)=>{
     })
   }
 
-  //resend verification otp
-
-  router.post("/resendOtpVerification",async(req,res)=>
-  {
-  try{
-    let {userId,email}=req.body;
-
-    if(!userId || !email){
-      throw Error("Empty user Details not allowed, either userId or email is not entered");
-
-    }else{
-
-      //delete existing records and resend it 
-
-      await UserOtpVerification.deleteMany({userId});
-      sendOtpVerificationEmail({_id:userId,email},res);
-    }
-  }catch (error){
-res.json({
-  status:"Failed",
-  message:error.message,
 })
+//resend verification otp
+
+router.post("/resendOtpVerification",async(req,res)=>
+{
+try{
+  console.log(req.body,"req")
+  let {userId,email}=req.body;
+
+  if(!userId || !email){
+    throw Error("Empty user Details not allowed, either userId or email is not entered");
+
+  }else{
+
+    //delete existing records and resend it 
+
+    await UserOtpVerification.deleteMany({userId});
+    sendOtpVerificationEmail({_id:userId,email},res);
+    res.json({
+      status:true,
+      message:`Otp Resend  successfully.`,
+    })
   }
-  })
+}catch (error){
+res.json({
+status:"Failed",
+message:error.message,
 })
+}
+})
+
+
+
 module.exports = router;
 // module.exports = generateJWt;
