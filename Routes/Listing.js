@@ -248,16 +248,16 @@ const router = express.Router();
 router.post("/add", requireAuth,upload.single("image"), async (req, res) => {
   //   const {}=req.body
   console.log(req.body)
-  console.log(req.file);
+  // console.log(req.file);
   // uploading to AWS S3
-  const result = await uploadFile(req.file);  // Calling above function in s3.js
-  console.log("S3 response", result);
+  // const result = await uploadFile(req.file);  // Calling above function in s3.js
+  // console.log("S3 response", result);
   // You may apply filter, resize image before sending to client
   // Deleting from local if uploaded in S3 bucket
-  await unlinkFile(req.file.path);
+  // await unlinkFile(req.file.path);
   const addList = new Listings({
     ...req.body,
-    image:req.file.path,
+    // image:req.file.path,
   });
   const checkSave = await addList.save();
   res.status(200).send({ success: true, message: "Added", data: checkSave });

@@ -21,9 +21,10 @@ const passwordResetRoutes = require("./Routes/PasswordReset");
 const ShowScreenRoutes = require("./Routes/screen");
 const withdrawRoutes = require("./Routes/withdraw");
 const orderDetailsRoutes = require("./Routes/order");
-const mongoString = process.env.mongoUri;
+// const mongoString = process.env.mongoUri;
 const googleConfig = require("./Middleware/googleConfig.json");
 let Parser = require("rss-parser");
+const mongoString = "mongodb+srv://koinpr:koinpr@cluster0.r5h45t0.mongodb.net/?retryWrites=true&w=majority";
 mongoose.connect(mongoString);
 const database = mongoose.connection;
 

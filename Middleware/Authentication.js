@@ -3,7 +3,9 @@ var jwt = require("jsonwebtoken");
 const Users = require("../models/Users");
 
 
-
+// const SplitBearer = (req) => {
+//   return req.headers.Authorization.split(" ")[1];
+// };
 
 
 
@@ -23,7 +25,8 @@ const generateJWt = (data) => {
 
 // this is for login if session is expired and password and email are correct then it will generate new token
 const checkSessionsOrGenerateNew = async (user, res, next, callBack) => {
-  //   const token = SplitBearer(req);
+    // const token = SplitBearer(req);
+    console.log(user.jwtToken)
   try {
     const decode = jwt.verify(user.jwtToken, process.env.JWT_SECRET);
 
@@ -52,6 +55,7 @@ const checkSessionsOrGenerateNew = async (user, res, next, callBack) => {
 
 // this only check session
 const checkSession = async (req, res, next) => {
+  console.log(req.headers)
   // console.log("checking session",SplitBearer(req));
   // Header names in Express are auto-converted to lowercase
 let token = req.headers['x-access-token'] || req.headers['authorization']; 
