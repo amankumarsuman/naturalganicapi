@@ -263,6 +263,60 @@ router.post("/add", requireAuth,upload.single("image"), async (req, res) => {
   res.status(200).send({ success: true, message: "Added", data: checkSave });
 });
 
+router.get("/",requireAuth, (req, res) => {
+  const date = new Date();
+  Listings.find()
+    .select("offerTitle listingCategory price image  specialPrice desc   _id ")
+    .exec()
+    .then((docs) => {
+      const response = {
+        count: docs.length,
+        productData: docs.map((doc) => {
+
+          
+          return {
+
+            offerTitle: doc.offerTitle,
+            listingCategory: doc.listingCategory,
+            price: doc.price,
+            specialPrice: doc.specialPrice,
+            desc: doc.desc,
+            image: doc.image,
+            // news:[{news:doc.news1,link:doc.news1Link},{news:doc.news2,link:doc.news2Link},{news:doc.news3,link:doc.news3Link},{news:doc.news4,link:doc.news4Link},{news:doc.news5,link:doc.news5Link}],
+            // newsLink:[doc.news1Link,doc.news2Link,doc.news3Link,doc.news4Link,doc.news5Link],
+            // news1: doc.news1,
+            // news1Link: doc.news1Link,
+            // news2: doc.news2,
+            // news2Link: doc.news2Link,
+            // news3: doc.news3,
+            // news3Link: doc.news3Link,
+            // news4: doc.news4,
+            // news4Link: doc.news4Link,
+            // news5: doc.news5,
+            // news5Link: doc.news5Link,
+            // lastUpdated:new Date(),
+            lastUpdated:doc.lastUpdated,
+            // link:doc.link,
+            _id: doc._id,
+          
+          };
+        }),
+      };
+      //   if (docs.length >= 0) {
+      res.status(200).json(response);
+      //   } else {
+      //       res.status(404).json({
+      //           message: 'No entries found'
+      //       });
+      //   }
+    })
+    .catch((err) => {
+      console.log(err);
+      res.status(500).json({
+        error: err,
+      });
+    });
+});
 router.get("/get-all",requireAuth, async (req, res) => {
   try {
     console.log(req.query);
@@ -296,24 +350,26 @@ router.get("/get-all",requireAuth, async (req, res) => {
         $project: {
           _id: 1,
           userId: 1,
-          websiteLink: 1,
+          // websiteLink: 1,
           offerTitle: 1,
           listingCategory: 1,
-          logo: 1,
-          websiteLanguage: 1,
-          noFollowLinkAllowed: 1,
-          doFollowLinkAllowed: 1,
-          indexedArticle: 1,
-          linkedin: 1,
-          googleNews: 1,
-          socialShare: 1,
-          facebook: 1,
-          twitter: 1,
+          // image: 1,
+          // websiteLanguage: 1,
+          // noFollowLinkAllowed: 1,
+          // doFollowLinkAllowed: 1,
+          // indexedArticle: 1,
+          // linkedin: 1,
+          // googleNews: 1,
+          // socialShare: 1,
+          // facebook: 1,
+          // twitter: 1,
           price:1,
           image:1,
-          "user.fullName": 1,
-          "user.email": 1,
-          "user.userType": 1,
+          specialPrice:1,
+          desc:1,
+          // "user.fullName": 1,
+          // "user.email": 1,
+          // "user.userType": 1,
         },
       },
       //   { $match: { userId: req.query.userId } },
