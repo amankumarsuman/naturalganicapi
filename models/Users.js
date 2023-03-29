@@ -21,7 +21,7 @@ const dataSchema = new mongoose.Schema({
   userType: {
     // required: [true, "User type is required (ADVERTISER / PUBLISHER)"],
     type: String,
-    enum: ["ADVERTISER", "PUBLISHER"],
+    enum: ["CUSTOMER", "VENDOR"],
     // default: 'NEW'
   },
   firstName: {
@@ -38,6 +38,18 @@ const dataSchema = new mongoose.Schema({
   },
   address: {
     type: String,
+    default: null,
+  },
+  city: {
+    type: String,
+    default: null,
+  },
+  location: {
+    type: String,
+    default: null,
+  },
+  mobile: {
+    type: Number,
     default: null,
   },
   firstName: {
@@ -80,32 +92,27 @@ const dataSchema = new mongoose.Schema({
     type: String,
     default: null,
   },
-  accNo:{
-    type:Number,
+  accNo: {
+    type: Number,
     // required: true,
-
-
   },
-  swiftCode:{
-    type:String,
+  swiftCode: {
+    type: String,
     // required: true,
-
   },
-  bankName:{
-    type:String,
+  bankName: {
+    type: String,
     // required: true,
-
   },
-  telegram:{
-    type:String
+  telegram: {
+    type: String,
   },
-  accountNo:{
-    type:String,
+  accountNo: {
+    type: String,
     // required: true,
-
   },
-  image:{
-    type:String
+  image: {
+    type: String,
   },
   jwtToken: String,
 });
