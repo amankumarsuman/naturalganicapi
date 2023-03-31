@@ -4,7 +4,7 @@ const mongoose = require("mongoose");
 const multer = require("multer");
 const { requireAuth } = require("../Middleware/Authentication");
 
-const Order = require("../models/order");
+const Order = require("../models/newOrder");
 
 router.get("/", (req, res) => {
   // if(req.header('token')==="koinpratodayqproductrsstoken"){

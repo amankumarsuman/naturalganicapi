@@ -21,7 +21,7 @@ const straightFromTheWorldRoutes = require("./Routes/straightFromTheWorld");
 const passwordResetRoutes = require("./Routes/PasswordReset");
 const ShowScreenRoutes = require("./Routes/screen");
 const withdrawRoutes = require("./Routes/withdraw");
-const orderDetailsRoutes = require("./Routes/order");
+const orderDetailsRoutes = require("./Routes/newOrder");
 const paymentRoute = require("./Routes/payment");
 
 // const mongoString = process.env.mongoUri;
