@@ -6,6 +6,8 @@ const { requireAuth } = require("../Middleware/Authentication");
 require("dotenv").config();
 const shortid = require("shortid");
 const Razorpay = require("razorpay");
+const crypto = require("crypto");
+
 const Order = require("../models/payment");
 const razorpay = new Razorpay({
   key_id: process.env.RAZORPAY_KEY_ID,
@@ -114,6 +116,74 @@ router.post("/addOrder", async (req, res) => {
   }
 });
 
+router.post("/verifyPayment", async (req, res) => {
+  try {
+    const { paymentId, orderId } = req.body;
+    const payment = await razorpay.payments.fetch(paymentId);
+
+    if (payment.order_id === orderId && payment.status === "captured") {
+      // payment is successful, update the order status in your database
+      // and send a response to the frontend
+      res.json({ success: true });
+    } else {
+      // payment verification failed, send a response to the frontend
+      res.json({ success: false });
+    }
+  } catch (error) {
+    console.log(error);
+    res.json({ success: false });
+  }
+});
+
+// configure webhook endpoint
+router.post("/webhook", (req, res) => {
+  // verify the webhook signature
+  const { razorpay_signature, ...payload } = req.body;
+  const hmac = crypto.createHmac("sha256", "rzp_test_neDr28vZagHxf1Alkaaman");
+  hmac.update(JSON.stringify(payload));
+  const generatedSignature = hmac.digest("hex");
+  if (generatedSignature !== razorpay_signature) {
+    console.error("Invalid webhook signature");
+    return res.sendStatus(400);
+  }
+
+  // handle the webhook event
+  const event = req.body.event;
+  switch (event) {
+    case "payment.captured":
+      const paymentId = req.body.payload.payment.entity.id;
+      // retrieve the payment details from Razorpay API
+      //   const razorpay = new Razorpay({
+      //     key_id: "YOUR_RAZORPAY_KEY_ID",
+      //     key_secret: "YOUR_RAZORPAY_KEY_SECRET",
+      //   });
+      razorpay.payments
+        .fetch(paymentId)
+        .then((payment) => {
+          // handle the successful payment
+          console.log("Payment successful:", payment);
+          // send a response to Razorpay indicating the webhook event was handled successfully
+          res.sendStatus(200);
+        })
+        .catch((error) => {
+          console.error("Error fetching payment details:", error);
+          res.sendStatus(500);
+        });
+      break;
+    case "payment.failed":
+      // handle the failed payment
+      console.log("Payment failed:", req.body.payload.payment.entity);
+      // send a response to Razorpay indicating the webhook event was handled successfully
+      res.sendStatus(200);
+      break;
+    default:
+      // handle other webhook events
+      console.log("Unhandled webhook event:", event);
+      // send a response to Razorpay indicating the webhook event was handled successfully
+      res.sendStatus(200);
+      break;
+  }
+});
 router.get("/:id", requireAuth, (req, res) => {
   const id = req.params.id;
   Order.findById(id)

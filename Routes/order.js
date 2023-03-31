@@ -36,7 +36,7 @@ router.get("/", (req, res) => {
   // if(req.header('token')==="koinpratodayqproductrsstoken"){
 
   Order.find()
-    .select("amount date userId title  _id ")
+    .select("amount  date userId title quantity image  _id ")
     .exec()
     .then((docs) => {
       const response = {
@@ -47,7 +47,7 @@ router.get("/", (req, res) => {
             date: doc.date,
             title: doc.title,
             userId: doc.userId,
-           
+            quantity: doc?.quantity,
             _id: doc._id,
             // request: {
             //   type: "GET",
@@ -77,15 +77,15 @@ router.get("/", (req, res) => {
   // }
 });
 
-router.post("/addOrder", (req, res) => {
+router.post("/addOrderData", (req, res) => {
   const order = new Order({
     _id: new mongoose.Types.ObjectId(),
-    userId:req.body.id,
-    amount: req.body.amount,
+    userId: req.body.id,
+    amount: req.body.specialPrice,
     date: Date.now(),
-    title: req.body.title,
-    
-    
+    title: req.body.name,
+    quantity: req?.body?.count,
+    image: req?.body?.image,
   });
   order
     .save()
@@ -98,11 +98,10 @@ router.post("/addOrder", (req, res) => {
           amount: result.amount,
           date: result.date,
           title: result.title,
-        
+          quantity: result?.quantity,
           _id: result._id,
           request: {
             type: "GET",
-            
           },
         },
       });
@@ -115,7 +114,7 @@ router.post("/addOrder", (req, res) => {
     });
 });
 
-router.get("/:id",requireAuth, (req, res) => {
+router.get("/:id", requireAuth, (req, res) => {
   const id = req.params.id;
   Order.findById(id)
     .select("amount date userId title  _id ")
@@ -180,16 +179,18 @@ router.get("/:id",requireAuth, (req, res) => {
 //   // });
 //   // res.send(filteredCategory);
 // });
-  
-
 
 // });
 
 //Delete by ID Method
 router.delete("/delete/:id", async (req, res) => {
-    const order = await Order.findByIdAndDelete(req.params.id);
-  
-    order.send({ success: true, data: rss, message: "Order Deleted Successfully" });
+  const order = await Order.findByIdAndDelete(req.params.id);
+
+  order.send({
+    success: true,
+    data: rss,
+    message: "Order Deleted Successfully",
   });
+});
 
 module.exports = router;
