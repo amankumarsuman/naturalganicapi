@@ -56,7 +56,7 @@ router.post("/sign-up", emailFormat, signUpValidations, async (req, res) => {
   });
   //  const path = `/user/${_id}`;
   const temp_secret = speakeasy.generateSecret();
-
+  console.log(req);
   const data = new Users({
     fullName: req.body.fullName,
     email: req.body.email,

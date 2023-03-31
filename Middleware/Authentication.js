@@ -2,14 +2,9 @@ const bcrypt = require("bcrypt");
 var jwt = require("jsonwebtoken");
 const Users = require("../models/Users");
 
-
 // const SplitBearer = (req) => {
 //   return req.headers.Authorization.split(" ")[1];
 // };
-
-
-
-
 
 const generateJWt = (data) => {
   console.log(data, "<<<<datasss");
@@ -25,8 +20,8 @@ const generateJWt = (data) => {
 
 // this is for login if session is expired and password and email are correct then it will generate new token
 const checkSessionsOrGenerateNew = async (user, res, next, callBack) => {
-    // const token = SplitBearer(req);
-    console.log(user.jwtToken)
+  // const token = SplitBearer(req);
+  console.log(user.jwtToken);
   try {
     const decode = jwt.verify(user.jwtToken, process.env.JWT_SECRET);
 
@@ -55,18 +50,18 @@ const checkSessionsOrGenerateNew = async (user, res, next, callBack) => {
 
 // this only check session
 const checkSession = async (req, res, next) => {
-  console.log(req.headers)
+  console.log(req.headers);
   // console.log("checking session",SplitBearer(req));
   // Header names in Express are auto-converted to lowercase
-let token = req.headers['x-access-token'] || req.headers['authorization']; 
+  let token = req.headers["x-access-token"] || req.headers["authorization"];
 
-console.log("token",token);
-// Remove Bearer from string
-token = token.replace(/^Bearer\s+/, "");
+  console.log("token", token);
+  // Remove Bearer from string
+  token = token.replace(/^Bearer\s+/, "");
 
   jwt.verify(token, process.env.JWT_SECRET, (err, decode) => {
     if (err) {
-      console.log("error ",err);
+      console.log("error ", err);
       res.status(401).send({ success: false, message: "Session Expired !!!" });
     } else {
       console.log(decode);
@@ -120,17 +115,17 @@ const matchToken = async (req, res, next) => {
 
 //  it check session and role both
 
-const verifyRole = async (req, res,next) => {
+const verifyRole = async (req, res, next) => {
   console.log("verify");
-  console.log(req.body,"req");
+  console.log(req.body, "req");
   if (!req.body.email) {
     res.status(400).send({ success: false, message: "Email is required" });
   }
   try {
-    let token = req.headers['x-access-token'] || req.headers['authorization']; 
+    let token = req.headers["x-access-token"] || req.headers["authorization"];
 
-// Remove Bearer from string
-token = token.replace(/^Bearer\s+/, "");
+    // Remove Bearer from string
+    token = token.replace(/^Bearer\s+/, "");
     jwt.verify(token, process.env.JWT_SECRET, (err, decode) => {
       if (err) {
         res.status(401).send({ success: false, message: "Unauthorized !!!" });
@@ -201,78 +196,80 @@ const siginInValidations = async (req, res, next) => {
   else next();
 };
 
-const requireAuth=(req,res,next)=>{
-const token = req.header('token');
-console.log(token,"token")
-// next()
-// check json web token exists &  is verified
-if(token==="koinpratodayqproductrsstoken"){
-  console.log("verified");
-  // res.status(200).send({ success: true, message: "Added Handpicked Successfully" });
+const requireAuth = (req, res, next) => {
+  const token = req.header("token");
+  console.log(token, "token");
+  // next()
+  // check json web token exists &  is verified
+  if (token === "koinpratodayqproductrsstoken") {
+    console.log("verified");
+    // res.status(200).send({ success: true, message: "Added Handpicked Successfully" });
 
-  next()
-}else{
-  res.status(401).send({ success: false, message: "Unauthorized !!!" });
-  // console.log("not verified user")
-}
-// try {
-//   jwt.verify(SplitBearer(req), process.env.JWT_SECRET, (err, decode) => {
-//     if (err) {
-//       res.status(401).send({ success: false, message: "Unauthorized !!!" });
-//     // } else {
-//     //   if (
-//     //     req.body.email == decode.email &&
-//     //     req.body.userType == decode.userType
-//     //   ) {
-//     //     console.log(decode, "<<<jwt");
-//     //     next();
-//     //   } else {
-//     //     res.status(401).send({ success: false, message: "Unauthorized !!!" });
-//     //   }
-//     }else{
-//       console.log(decode, "<<<jwt");
-//       next()
-//     }
-//   });
-// } catch (e) {
-//   console.log(e, "<<<error");
-//   res.status(401).send({ success: false, message: "Unauthorized !!!" });
-// }
-}
+    next();
+  } else {
+    res.status(401).send({ success: false, message: "Unauthorized !!!" });
+    // console.log("not verified user")
+  }
+  // try {
+  //   jwt.verify(SplitBearer(req), process.env.JWT_SECRET, (err, decode) => {
+  //     if (err) {
+  //       res.status(401).send({ success: false, message: "Unauthorized !!!" });
+  //     // } else {
+  //     //   if (
+  //     //     req.body.email == decode.email &&
+  //     //     req.body.userType == decode.userType
+  //     //   ) {
+  //     //     console.log(decode, "<<<jwt");
+  //     //     next();
+  //     //   } else {
+  //     //     res.status(401).send({ success: false, message: "Unauthorized !!!" });
+  //     //   }
+  //     }else{
+  //       console.log(decode, "<<<jwt");
+  //       next()
+  //     }
+  //   });
+  // } catch (e) {
+  //   console.log(e, "<<<error");
+  //   res.status(401).send({ success: false, message: "Unauthorized !!!" });
+  // }
+};
 
-
-const verifyRoleListing = async (req, res,next) => {
-// const token = req.cookies.jwt;
-console.log(req.headers.authorization.split(" ")[1],"check token")
+const verifyRoleListing = async (req, res, next) => {
+  // const token = req.cookies.jwt;
+  console.log(req.headers.authorization.split(" ")[1], "check token");
   console.log("verify");
-  console.log(req.body,"reqauth");
+  console.log(req.body, "reqauth");
   // next()
   if (!req.body.email) {
     res.status(400).send({ success: false, message: "Email is required" });
   }
   try {
-    jwt.verify(req.headers.authorization.split(" ")[1], process.env.JWT_SECRET, (err, decode) => {
-      if (err) {
-        console.log(err,"error")
-        res.status(401).send({ success: false, message: "Unauthorized !!!" });
-      } else {
-        if (
-          req.body.email == decode.email
-        ) {
-          console.log(decode, "<<<jwt");
-          next();
-        } else {
+    jwt.verify(
+      req.headers.authorization.split(" ")[1],
+      process.env.JWT_SECRET,
+      (err, decode) => {
+        if (err) {
+          console.log(err, "error");
           res.status(401).send({ success: false, message: "Unauthorized !!!" });
+        } else {
+          if (req.body.email == decode.email) {
+            console.log(decode, "<<<jwt");
+            next();
+          } else {
+            res
+              .status(401)
+              .send({ success: false, message: "Unauthorized !!!" });
+          }
         }
       }
-    });
+    );
   } catch (e) {
     console.log(e, "<<<error");
     res.status(401).send({ success: false, message: "Unauthorized !!!" });
   }
 };
 module.exports = {
- 
   verifyRole,
   checkSessionsOrGenerateNew,
   emailFormat,
@@ -281,5 +278,5 @@ module.exports = {
   checkSession,
   siginInValidations,
   requireAuth,
-  verifyRoleListing
+  verifyRoleListing,
 };
